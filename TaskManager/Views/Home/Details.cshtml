@@ -1,0 +1,60 @@
+﻿@model TaskManager.Models.Task
+
+@{
+    ViewData["Title"] = "Просмотр задачи";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Просмотр задачи @*<small><a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a></small>*@</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            Статус
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TaskStatus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ListOfPerformers)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ListOfPerformers)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateOfRegistration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateOfRegistration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Laboriousness)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Laboriousness)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    
+    <a asp-action="Index" asp-route-selectedTaskId="@Model.Id">Назад к списку</a>
+</div>

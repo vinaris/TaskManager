@@ -1,0 +1,169 @@
+﻿@using System.Globalization
+@using Task = TaskManager.Models.Task
+@using TaskStatus = TaskManager.Models.TaskStatus
+@model TasksList
+
+@{
+    ViewData["Title"] = "Список задач";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Список задач
+    @*@{
+        if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <small style="color: red">@ViewBag.Message</small>
+        }
+    }*@  
+</h2>
+
+@{
+    if (!string.IsNullOrEmpty(ViewBag.Message))
+    {
+        <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Ошибка:</span>
+            @ViewBag.Message
+        </div>
+    }
+}  
+<p>
+    <a asp-action="Create" class="btn btn-default">Добавить новую задачу</a>
+</p>
+
+<table>
+    <tr>
+        <td>
+            @Html.Partial("TreeList", Model)
+        </td>
+        @{
+            var selectedTask = (Task) ViewBag.SelectedTask;
+            if (selectedTask != null)
+            {
+                <td style="max-width: 600px;width: auto">
+              
+                    <dl class="dl-ver">
+                        <dt>
+                            @Html.DisplayNameFor(model => selectedTask.Name)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.Name)
+
+                            <a asp-action="Edit" asp-route-id="@selectedTask.Id" title="Изменить"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                            <a asp-action="Delete" asp-route-id="@selectedTask.Id" asp-route-path="Index" title="Удалить"><span class="glyphicon glyphicon-remove DeleteButton" aria-hidden="true"></span></a>
+                        </dd>
+                        <dt>
+                            Статус
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.TaskStatus)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => selectedTask.Description)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.Description)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => selectedTask.ListOfPerformers)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.ListOfPerformers)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => selectedTask.DateOfRegistration)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.DateOfRegistration)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => selectedTask.Laboriousness)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => selectedTask.Laboriousness)
+                        </dd>
+                        @if (selectedTask.TaskStatus == TaskStatus.Completed)
+                        {
+                            <dt>
+                                Фактическое время выполнения
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => selectedTask.PerformTime)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => selectedTask.EndDate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => selectedTask.EndDate)
+                            </dd>
+                        }
+                        else
+                        {
+                            <dt>
+                                Действия
+                            </dt>
+                            <dd>
+                                <div class="btn-group" role="group" aria-label="...">
+                                    <a asp-action="Play" asp-route-id="@selectedTask.Id" class="btn btn-default">Выполнять</a>
+                                    <a asp-action="Stop" asp-route-id="@selectedTask.Id" class="btn btn-default">Приостановить</a>
+                                    <form asp-action="Create">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="count" name="count" placeholder="Время выполнения" required />
+                                            <span class="input-group-btn">
+                                                <input type="submit" class="btn btn-default" asp-action="Perform" asp-route-id="@selectedTask.Id" value="Завершить" />
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </dd>
+                        }
+                        @{
+                            var subTasks = Model.Tasks.Where(i => i.ParentTaskId == selectedTask.Id);
+                            if (subTasks.Any())
+                            {
+                                double sumPlan = 0;
+                                double sumPerform = 0;
+                                <dt>Список подзадач</dt>
+                                <dd>
+                                    <ul class="FirstUl">
+                                        @foreach (var item in Model.Tasks.Where(i => i.ParentTaskId == selectedTask.Id))
+                                        {
+                                            sumPlan += item.Laboriousness;
+                                            sumPerform += Convert.ToDouble(item.PerformTime);
+                                            var timeStr = item.PerformTime != null && item.PerformTime != 0 ? item.PerformTime.ToString(): "Задача не выполнена";
+                                            var timeStr2 = item.Laboriousness != 0 ? item.Laboriousness.ToString(CultureInfo.InvariantCulture): "Не указано";
+                                            <li><a asp-action="Index" asp-route-selectedTaskId="@item.Id">@item.Name. Статус: @Html.DisplayFor(model => item.TaskStatus) Время выполнения: @timeStr (по плану: @timeStr2).</a></li>
+                                        }
+                                    </ul>
+                                </dd>
+                                <dt>Расчёт плановой трудоёмкости подзадач</dt>
+                                <dd>
+                                    @if(sumPlan==0){
+                                        <p>Не указано.</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@sumPlan</p>
+                                    }
+                                </dd>
+                                <dt>Расчёт фактического времени выполнения подзадач</dt>
+                                <dd>
+                                    @if (sumPerform == 0)
+                                    {
+                                        <p>Подзадачи не выполнены.</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@sumPerform</p>
+                                    }
+                                </dd>
+                            }
+                        }
+                    </dl>
+                   
+                </td>
+            }
+        }
+    </tr>
+</table>

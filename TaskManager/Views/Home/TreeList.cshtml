@@ -1,0 +1,41 @@
+﻿@using TaskStatus = TaskManager.Models.TaskStatus
+@model TasksList
+
+@if (Model.Tasks.Any(x => x.ParentTaskId == Model.Seed))
+{
+    <ul>
+        @foreach (var item in Model.Tasks)
+        {
+            if (item.ParentTaskId == Model.Seed)
+            {
+                var className = "";
+                if (item.TaskStatus == TaskStatus.Appointed)
+                {
+                    className = "AppointedTask";
+                }
+                else if(item.TaskStatus == TaskStatus.Performed)
+                {
+                    className = "PerformedTask";
+                }
+                else if(item.TaskStatus == TaskStatus.Suspended)
+                {
+                    className = "SuspendedTask";
+                }
+                else if(item.TaskStatus == TaskStatus.Completed)
+                {
+                    className = "CompletedTask";
+                }
+                <li class="@className"><a asp-action="Index" asp-route-selectedTaskId="@item.Id">@item.Name. Исполнители: @item.ListOfPerformers. @*Статус: @Html.DisplayFor(model => item.TaskStatus)*@</a>
+                    <a asp-action="Create" asp-route-parentId="@item.Id" title="Создать подзадачу"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                    
+                </li>
+                TasksList inner = new TasksList
+                {
+                    Seed = item.Id,
+                    Tasks = Model.Tasks
+                };
+                @Html.Partial("TreeList", inner)
+            }
+        }
+    </ul>
+}

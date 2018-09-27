@@ -1,0 +1,61 @@
+﻿.LeftTaskTr {
+    border-radius: 20px 0 0 20px;
+}
+
+.RightTaskTr {
+    border-radius: 0 20px 20px 0;
+}
+
+.SuspendedTask {
+    background-color: salmon;
+    border-radius: 20px;
+}
+
+.AppointedTask {
+    background-color:coral;
+    border-radius: 20px;
+}
+
+.PerformedTask {
+    background-color: palegoldenrod;
+    border-radius: 20px;
+}
+.CompletedTask {
+    background-color: lightgreen;
+    border-radius: 20px;
+}
+
+.DoneButton {
+    color: green;
+}
+.DeleteButton {
+    color: darkred;
+}
+
+td {
+    vertical-align: top;
+    padding: 20px;
+}
+
+.FirstUl {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+li {
+    list-style-type: none;
+    padding: 5px;
+    margin: 5px 0;
+    
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/*th {
+    text-align: center;
+    vertical-align: center;
+}*/
+
